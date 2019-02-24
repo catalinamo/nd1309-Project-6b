@@ -1,0 +1,22 @@
+{
+  "name": "apple-supply-chain",
+  "version": "1.0.0",
+  "description": "Apple (fruit) supply chain tracking",
+  "main": "index.js",
+  "scripts": {
+    "dev": "lite-server",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "Catalina Movileanu <cmovileanu@gmail.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "lite-server": "2.4.0"
+  },
+  "dependencies": {
+    "ganache-cli": "^6.3.0",
+    "openzeppelin-solidity": "^2.1.2",
+    "truffle": "^5.0.5",
+    "web3": "^1.0.0-beta.46"
+  }
+}
