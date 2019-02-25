@@ -1,7 +1,7 @@
 # Rinkeby network contract address / tx
-Address: [0x3C4E58fffB6f80FBAca817424C41A41dE9ABd9E8](https://rinkeby.etherscan.io/address/0x3C4E58fffB6f80FBAca817424C41A41dE9ABd9E8)
+Address: [0x4e6C4D761ebab6569Eb2126a591d02e516214c6a](https://rinkeby.etherscan.io/address/0x4e6C4D761ebab6569Eb2126a591d02e516214c6a)
 
-Transaction: [0x7e6c7980db3c35fdc313c30afa2e819cea24bc2bf8e553ee25fb6470d5df7937](https://rinkeby.etherscan.io/tx/0x7e6c7980db3c35fdc313c30afa2e819cea24bc2bf8e553ee25fb6470d5df7937)
+Transaction: [0x8e374fc066ae4a1815d4338f0f09304436f390767642cb096391687f44d954e0](https://rinkeby.etherscan.io/tx/0x8e374fc066ae4a1815d4338f0f09304436f390767642cb096391687f44d954e0)
 
 # Supply chain & data auditing
 
@@ -99,7 +99,7 @@ npm run dev
 
 * [Ethereum](https://www.ethereum.org/) - Ethereum is a decentralized platform that runs smart contracts to make the web faster, safer, and more open.
 * [Truffle Framework](http://truffleframework.com/) - Truffle is the most popular development framework for Ethereum with a mission to make your life a whole lot easier.
-* [OpenZeppelin](https://openzeppelin.org/) - battle-tested framework of reusable smart contracts for Ethereum and other EVM and eWASM blockchains.
+* [OpenZeppelin](https://openzeppelin.org/) - battle-tested framework of reusable smart contracts for Ethereum and other EVM and eWASM blockchains. I used `Ownable.sol`, `Secondary.sol` (ownership) and `Roles.sol` (for role based access control)
 
 
 ## Authors

@@ -41,9 +41,12 @@ contract('SupplyChain', function(accounts) {
     console.log("Retailer: accounts[3] ", accounts[3])
     console.log("Consumer: accounts[4] ", accounts[4])
 
+
     // 1st Test
     it("Testing smart contract function harvestItem() that allows a farmer to harvest apples", async() => {
         const supplyChain = await SupplyChain.deployed()
+
+        await supplyChain.registerFarmer(originFarmerID, {from: ownerID})
 
         // Mark an item as Harvested by calling function harvestItem()
         var result = await supplyChain.harvestItem(upc, originFarmerID, originFarmName, originFarmInformation, originFarmLatitude, originFarmLongitude, productNotes, {from: originFarmerID})
@@ -128,6 +131,8 @@ contract('SupplyChain', function(accounts) {
     it("Testing smart contract function buyItem() that allows a wholesaler to buy apples", async() => {
         const supplyChain = await SupplyChain.deployed()
 
+        await supplyChain.registerWholesaler(wholesalerID, {from: ownerID})
+
         // get seller balance
         const initialSellerBalance = parseInt(await web3.eth.getBalance(originFarmerID), 10)
 
@@ -158,7 +163,7 @@ contract('SupplyChain', function(accounts) {
         const supplyChain = await SupplyChain.deployed()
 
         // Mark an item as Packed by calling function shipItem()
-        var result = await supplyChain.shipItem(upc, {from: originFarmerID})
+        var result = await supplyChain.shipItem(upc, {from: wholesalerID})
 
         // Declare and Initialize a variable for event
         var eventEmitted = result.logs[0].event == 'Shipped'
@@ -174,6 +179,8 @@ contract('SupplyChain', function(accounts) {
     // 7th Test
     it("Testing smart contract function receiveItem() that allows a retailer to mark apples received", async() => {
         const supplyChain = await SupplyChain.deployed()
+
+        await supplyChain.registerRetailer(retailerID)
 
         // Mark an item as Packed by calling function receiveItem()
         var result = await supplyChain.receiveItem(upc, {from: retailerID})

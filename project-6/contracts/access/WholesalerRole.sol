@@ -21,7 +21,7 @@ contract WholesalerRole {
 
   // Define a modifier that checks to see if msg.sender has the appropriate role
   modifier onlyWholesaler() {
-    require(isWholesaler(msg.sender));
+    require(isWholesaler(msg.sender), "sender is not wholesaler");
     _;
   }
 

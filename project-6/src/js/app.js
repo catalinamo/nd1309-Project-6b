@@ -12,7 +12,7 @@ App = {
     originFarmLatitude: null,
     originFarmLongitude: null,
     productNotes: null,
-    productPrice: "1",
+    productPrice: "0",
     wholesalerID: "0x0000000000000000000000000000000000000000",
     retailerID: "0x0000000000000000000000000000000000000000",
     consumerID: "0x0000000000000000000000000000000000000000",
@@ -74,7 +74,7 @@ App = {
         }
         // If no injected web3 instance is detected, fall back to Ganache
         else {
-            App.web3Provider = new Web3.providers.HttpProvider('http://localhost:7545');
+            App.web3Provider = new Web3.providers.HttpProvider('http://localhost:8545');
         }
 
         App.getMetaskAccountID();
@@ -93,14 +93,6 @@ App = {
             }
             console.log('getMetaskID:', res);
             App.metamaskAccountID = res[0];
-            App.originFarmerID = res[0];
-            $("#originFarmerID").val(res[0]);
-            App.wholesalerID = res[2];
-            $("#wholesalerID").val(res[2]);
-            App.retailerID = res[3];
-            $("#retailerID").val(res[3]);
-            App.consumerID = res[4];
-            $("#consumerID").val(res[4]);
         })
     },
 
@@ -118,6 +110,14 @@ App = {
             App.fetchItemBufferOne();
             App.fetchItemBufferTwo();
             App.fetchEvents();
+
+            App.getMetaskAccountID();
+
+            App.contracts.SupplyChain.deployed().then(function(instance){
+                instance.registerFarmer(App.originFarmerID, {from: App.metamaskAccountID});
+                instance.registerRetailer(App.retailerID, {from: App.metamaskAccountID});
+                instance.registerWholesaler(App.wholesalerID, {from: App.metamaskAccountID});
+            });
 
         });
 
@@ -183,7 +183,7 @@ App = {
                 App.originFarmLatitude, 
                 App.originFarmLongitude, 
                 App.productNotes,
-                { from: App.metamaskAccountID, gas: 250000 }
+                { from: App.originFarmerID }
             );
         }).then(function(result) {
             $("#ftc-item").text(result);
@@ -198,7 +198,7 @@ App = {
         var processId = parseInt($(event.target).data('id'));
 
         App.contracts.SupplyChain.deployed().then(function(instance) {
-            return instance.sortItem(App.upc, {from: App.metamaskAccountID});
+            return instance.sortItem(App.upc, {from: App.originFarmerID});
         }).then(function(result) {
             $("#ftc-item").text(result);
             console.log('sortItem',result);
@@ -212,7 +212,7 @@ App = {
         var processId = parseInt($(event.target).data('id'));
 
         App.contracts.SupplyChain.deployed().then(function(instance) {
-            return instance.packItem(App.upc, {from: App.metamaskAccountID});
+            return instance.packItem(App.upc, {from: App.originFarmerID});
         }).then(function(result) {
             $("#ftc-item").text(result);
             console.log('packItem',result);
@@ -226,9 +226,9 @@ App = {
         var processId = parseInt($(event.target).data('id'));
 
         App.contracts.SupplyChain.deployed().then(function(instance) {
-            App.productPrice = web3.toWei(1, "ether");
+            const productPrice = web3.toWei(App.productPrice, "ether");
             console.log('productPrice',productPrice);
-            return instance.sellItem(App.upc, App.productPrice, {from: App.metamaskAccountID});
+            return instance.sellItem(App.upc, productPrice, {from: App.originFarmerID});
         }).then(function(result) {
             $("#ftc-item").text(result);
             console.log('sellItem',result);
@@ -242,8 +242,8 @@ App = {
         var processId = parseInt($(event.target).data('id'));
 
         App.contracts.SupplyChain.deployed().then(function(instance) {
-            const walletValue = web3.toWei(3, "ether");
-            return instance.buyItem(App.upc, {from: App.metamaskAccountID, value: walletValue});
+            const walletValue = web3.toWei(App.productPrice, "ether");
+            return instance.buyItem(App.upc, {from: App.wholesalerID, value: walletValue});
         }).then(function(result) {
             $("#ftc-item").text(result);
             console.log('buyItem',result);
@@ -257,7 +257,7 @@ App = {
         var processId = parseInt($(event.target).data('id'));
 
         App.contracts.SupplyChain.deployed().then(function(instance) {
-            return instance.shipItem(App.upc, {from: App.metamaskAccountID});
+            return instance.shipItem(App.upc, {from: App.wholesalerID});
         }).then(function(result) {
             $("#ftc-item").text(result);
             console.log('shipItem',result);
@@ -271,7 +271,7 @@ App = {
         var processId = parseInt($(event.target).data('id'));
 
         App.contracts.SupplyChain.deployed().then(function(instance) {
-            return instance.receiveItem(App.upc, {from: App.metamaskAccountID});
+            return instance.receiveItem(App.upc, {from: App.retailerID});
         }).then(function(result) {
             $("#ftc-item").text(result);
             console.log('receiveItem',result);
@@ -285,8 +285,8 @@ App = {
         var processId = parseInt($(event.target).data('id'));
 
         App.contracts.SupplyChain.deployed().then(function(instance) {
-            const walletValue = web3.toWei(3, "ether");
-            return instance.purchaseItem(App.upc, {from: App.metamaskAccountID, value: walletValue});
+            const walletValue = web3.toWei(App.productPrice, "ether");
+            return instance.purchaseItem(App.upc, {from: App.consumerID, value: walletValue});
         }).then(function(result) {
             $("#ftc-item").text(result);
             console.log('purchaseItem',result);
